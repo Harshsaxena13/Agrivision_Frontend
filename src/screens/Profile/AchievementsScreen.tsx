@@ -48,17 +48,21 @@ const clampProgress = (value: number, target: number) =>
   Math.min(Math.max(value, 0), target);
 
 export const AchievementsScreen: React.FC<Props> = ({ navigation }) => {
-  const { user, scanHistory, crops, fields, chatHistory, posts } = useAppStore();
+  const { user, scanHistory, crops, fields, chatHistory, posts } =
+    useAppStore();
   const [filter, setFilter] = React.useState<Filter>("all");
 
   const totalScans = user?.totalScans ?? scanHistory.length;
   const diseasesDetected =
-    user?.diseasesDetected ?? scanHistory.filter((scan) => scan.result.disease).length;
+    user?.diseasesDetected ??
+    scanHistory.filter((scan) => scan.result.disease).length;
   const healthyScans = scanHistory.filter(
     (scan) => scan.result.healthStatus === "Healthy",
   ).length;
   const uniqueScanDays = new Set(scanHistory.map((scan) => scan.date)).size;
-  const activeFields = fields.filter((field) => field.status === "Active").length;
+  const activeFields = fields.filter(
+    (field) => field.status === "Active",
+  ).length;
   const profileComplete = [
     user?.name,
     user?.location,
@@ -355,7 +359,9 @@ const AchievementRow: React.FC<AchievementRowProps> = ({
       <View
         style={[
           styles.achievementIcon,
-          unlocked ? styles.achievementIconUnlocked : styles.achievementIconLocked,
+          unlocked
+            ? styles.achievementIconUnlocked
+            : styles.achievementIconLocked,
         ]}
       >
         <Ionicons
@@ -388,10 +394,7 @@ const AchievementRow: React.FC<AchievementRowProps> = ({
         ) : (
           <View style={styles.rowProgressTrack}>
             <View
-              style={[
-                styles.rowProgressFill,
-                { width: `${progressPercent}%` },
-              ]}
+              style={[styles.rowProgressFill, { width: `${progressPercent}%` }]}
             />
           </View>
         )}

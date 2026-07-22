@@ -117,14 +117,20 @@ function PickerModal<T extends string>({
   return (
     <Modal visible={visible} transparent animationType="fade">
       <Pressable style={styles.modalOverlay} onPress={onClose}>
-        <Pressable style={styles.modalSheet} onPress={(e) => e.stopPropagation()}>
+        <Pressable
+          style={styles.modalSheet}
+          onPress={(e) => e.stopPropagation()}
+        >
           <Text style={styles.modalTitle}>{title}</Text>
           {options.map((option) => {
             const isSelected = option === selected;
             return (
               <TouchableOpacity
                 key={option}
-                style={[styles.modalOption, isSelected && styles.modalOptionSelected]}
+                style={[
+                  styles.modalOption,
+                  isSelected && styles.modalOptionSelected,
+                ]}
                 onPress={() => {
                   onSelect(option);
                   onClose();
@@ -138,7 +144,9 @@ function PickerModal<T extends string>({
                 >
                   {option}
                 </Text>
-                {isSelected && <Ionicons name="checkmark" size={18} color={GREEN} />}
+                {isSelected && (
+                  <Ionicons name="checkmark" size={18} color={GREEN} />
+                )}
               </TouchableOpacity>
             );
           })}

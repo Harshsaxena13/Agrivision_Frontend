@@ -45,9 +45,9 @@ export const ProfileScreen: React.FC = () => {
   const avgHealth =
     scanHistory.length > 0
       ? Math.round(
-        scanHistory.reduce((sum, s) => sum + s.result.overallScore, 0) /
-        scanHistory.length,
-      )
+          scanHistory.reduce((sum, s) => sum + s.result.overallScore, 0) /
+            scanHistory.length,
+        )
       : 0;
 
   const MENU_ITEMS = [

@@ -88,7 +88,10 @@ const SelectField: React.FC<SelectFieldProps> = ({
 
       <Modal visible={open} transparent animationType="fade">
         <Pressable style={styles.modalOverlay} onPress={() => setOpen(false)}>
-          <Pressable style={styles.modalSheet} onPress={(e) => e.stopPropagation()}>
+          <Pressable
+            style={styles.modalSheet}
+            onPress={(e) => e.stopPropagation()}
+          >
             <Text style={styles.modalTitle}>{label}</Text>
             <ScrollView style={styles.modalList} bounces={false}>
               {options.map((option) => {
@@ -96,7 +99,10 @@ const SelectField: React.FC<SelectFieldProps> = ({
                 return (
                   <TouchableOpacity
                     key={option}
-                    style={[styles.modalOption, selected && styles.modalOptionSelected]}
+                    style={[
+                      styles.modalOption,
+                      selected && styles.modalOptionSelected,
+                    ]}
                     onPress={() => {
                       onSelect(option);
                       setOpen(false);
@@ -133,7 +139,9 @@ export const EditProfileScreen: React.FC<Props> = ({ navigation }) => {
   const [phone, setPhone] = useState(user.phone);
   const [email, setEmail] = useState(user.email || authUser?.email || "");
   const [location, setLocation] = useState(user.location);
-  const [farmingExperience, setFarmingExperience] = useState(user.farmingExperience);
+  const [farmingExperience, setFarmingExperience] = useState(
+    user.farmingExperience,
+  );
   const [cropType, setCropType] = useState(user.cropType);
   const [avatarUri, setAvatarUri] = useState(user.avatarUri);
   const [saving, setSaving] = useState(false);
@@ -153,7 +161,7 @@ export const EditProfileScreen: React.FC<Props> = ({ navigation }) => {
     if (status !== "granted") {
       Alert.alert(
         "Permission needed",
-        "Please allow photo library access to update your profile picture."
+        "Please allow photo library access to update your profile picture.",
       );
       return;
     }

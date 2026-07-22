@@ -28,7 +28,7 @@ const BORDER = "#E5E7EB";
 const INACTIVE_BG = "#F3F4F6";
 const INACTIVE_TEXT = "#6B7280";
 
-const FIELD_IMAGE = require("../../../assets/maize.png");
+const FIELD_IMAGE = require("../../../assets/maize.jpg");
 
 type FieldCardProps = {
   field: Field;
@@ -58,7 +58,9 @@ const FieldCard: React.FC<FieldCardProps> = ({ field, onMenuPress }) => {
               <Text
                 style={[
                   styles.statusText,
-                  isActive ? styles.statusTextActive : styles.statusTextInactive,
+                  isActive
+                    ? styles.statusTextActive
+                    : styles.statusTextInactive,
                 ]}
               >
                 {field.status}
@@ -141,7 +143,10 @@ export const MyFieldsScreen: React.FC<Props> = ({ navigation }) => {
         <TouchableOpacity
           style={styles.headerBtn}
           onPress={() =>
-            Alert.alert("Coming Soon", "Add field feature is under development.")
+            Alert.alert(
+              "Coming Soon",
+              "Add field feature is under development.",
+            )
           }
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >

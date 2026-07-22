@@ -207,7 +207,13 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
         <View style={styles.recentList}>
           {scanHistory.length === 0 ? (
-            <Text style={{ textAlign: "center", color: TEXT_MUTED, paddingVertical: 12 }}>
+            <Text
+              style={{
+                textAlign: "center",
+                color: TEXT_MUTED,
+                paddingVertical: 12,
+              }}
+            >
               No recent scans found.
             </Text>
           ) : (
@@ -218,10 +224,24 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
 
               return (
                 <View key={scan.id}>
-                  <TouchableOpacity style={styles.scanItem} activeOpacity={0.7} onPress={() => navigation.navigate("ScanResult", { result: scan.result, imageUri: scan.imageUri })}>
-                    <Image source={{ uri: scan.imageUri }} style={styles.scanImage} />
+                  <TouchableOpacity
+                    style={styles.scanItem}
+                    activeOpacity={0.7}
+                    onPress={() =>
+                      navigation.navigate("ScanResult", {
+                        result: scan.result,
+                        imageUri: scan.imageUri,
+                      })
+                    }
+                  >
+                    <Image
+                      source={{ uri: scan.imageUri }}
+                      style={styles.scanImage}
+                    />
                     <View style={styles.scanDetails}>
-                      <Text style={styles.scanItemTitle}>{scan.result.plantName || "Unknown Plant"}</Text>
+                      <Text style={styles.scanItemTitle}>
+                        {scan.result.plantName || "Unknown Plant"}
+                      </Text>
                       <Text style={styles.scanItemDate}>{scan.date}</Text>
                     </View>
                     <View style={styles.scanRight}>
@@ -229,7 +249,9 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
                         {status}
                       </Text>
                       {scan.result.disease && (
-                        <Text style={styles.scanAge}>{scan.result.disease.severity} Severity</Text>
+                        <Text style={styles.scanAge}>
+                          {scan.result.disease.severity} Severity
+                        </Text>
                       )}
                     </View>
                   </TouchableOpacity>

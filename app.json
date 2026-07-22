@@ -4,7 +4,7 @@
     "slug": "AgriVisionAi",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/agrivision-icon.png",
     "userInterfaceStyle": "dark",
     "splash": {
       "backgroundColor": "#0A1A06"
@@ -16,11 +16,10 @@
         "NSPhotoLibraryUsageDescription": "AgriVisionAI needs photo library access to analyze plant images.",
         "NSLocationWhenInUseUsageDescription": "AgriVisionAI uses your location to provide local weather and crop advisory."
       },
-      "bundleIdentifier": "com.anonymous.AgriVisionAi"
+      "bundleIdentifier": "com.harsh.sxna.agrivisionai"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#0A1A06",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -30,14 +29,9 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.CAMERA",
-        "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.anonymous.AgriVisionAi"
+      "package": "com.harsh.sxna.agrivisionai"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -56,6 +50,12 @@
         }
       ],
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5597ccb6-4555-44f7-9e01-2efaf839e8a5"
+      }
+    },
+    "owner": "harsh.sxna"
   }
 }
