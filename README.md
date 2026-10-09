@@ -30,9 +30,9 @@ Users can organize crop information, scan plant images for disease analysis, rev
 ## 📱 App Preview
 
 <p align="center">
-  <img src="scr/onboarding.png" alt="AgriVision AI onboarding screen" width="32%">
+  <img src="src/onboarding.png" alt="AgriVision AI onboarding screen" width="32%">
   &nbsp;&nbsp;
-  <img src="scr/dashboard.png" alt="AgriVision AI farmer dashboard" width="32%">
+  <img src="src/dashboard.png" alt="AgriVision AI farmer dashboard" width="32%">
 </p>
 
 <p align="center">
