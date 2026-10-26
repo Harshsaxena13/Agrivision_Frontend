@@ -36,11 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
         { paddingTop: insets.top + 8 },
       ]}
     >
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="transparent"
-        translucent
-      />
+      <StatusBar barStyle="light-content" />
       <View style={styles.row}>
         {showBack ? (
           <TouchableOpacity

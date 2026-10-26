@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import axios from "axios";
 import { DISEASE_DATABASE } from "./geminiApi";
 import { DiseaseResult, ScanAnalysis } from "../navigation/types";
 
@@ -9,8 +10,9 @@ const DEFAULT_API_URL = Platform.select({
   default: "http://127.0.0.1:8000",
 });
 
-const DISEASE_API_URL =
-  (process.env.EXPO_PUBLIC_DISEASE_API_URL ?? DEFAULT_API_URL).replace(/\/+$/, "");
+const DISEASE_API_URL = (
+  process.env.EXPO_PUBLIC_DISEASE_API_URL ?? DEFAULT_API_URL
+).replace(/\/+$/, "");
 const DISEASE_API_ENDPOINT =
   process.env.EXPO_PUBLIC_DISEASE_API_ENDPOINT ?? "/predict";
 const DISEASE_API_TIMEOUT_MS = 120000;
@@ -21,9 +23,9 @@ let warmupPromise: Promise<void> | null = null;
 
 const normalizeLabel = (value: string) =>
   value
-    .replace(/\.[a-z0-9]+$/i, "")   // strip file extensions
-    .replace(/^wheat[_\s]*/i, "")    // strip leading "Wheat_" / "wheat " prefix
-    .replace(/[_-]+/g, " ")          // underscores/hyphens → spaces
+    .replace(/\.[a-z0-9]+$/i, "") // strip file extensions
+    .replace(/^wheat[_\s]*/i, "") // strip leading "Wheat_" / "wheat " prefix
+    .replace(/[_-]+/g, " ") // underscores/hyphens → spaces
     .replace(/\s+/g, " ")
     .trim();
 
@@ -238,30 +240,42 @@ export const analyzeWithDiseaseModel = async (
     type: mimeType,
   } as unknown as Blob);
 
-  let response: Response | undefined;
+  let responseData: ModelResponse | undefined;
   let lastError = "Unknown error";
 
   // Prediction is read-only, so one retry is safe. It also lets a Render
   // instance finish waking up after the first request reaches it.
   for (let attempt = 1; attempt <= MODEL_REQUEST_ATTEMPTS; attempt += 1) {
     try {
-      const candidate = await fetchWithTimeout(
-        endpoint,
-        { method: "POST", body: formData },
-        DISEASE_API_TIMEOUT_MS,
-      );
-
-      if (candidate.ok) {
-        response = candidate;
-        break;
-      }
-
-      const errorText = await candidate.text();
-      lastError = `Request failed (${candidate.status}): ${errorText || candidate.statusText}`;
-      // Client-side errors will not become valid by retrying the same image.
-      if (candidate.status < 500) break;
+      // Expo's native fetch rejects React Native's { uri, name, type }
+      // FormData file parts with "Unsupported FormDataPart implementation".
+      // Axios uses React Native's XHR adapter, which supports this file shape.
+      const candidate = await axios.post<ModelResponse>(endpoint, formData, {
+        timeout: DISEASE_API_TIMEOUT_MS,
+        headers: { Accept: "application/json" },
+      });
+      responseData = candidate.data;
+      break;
     } catch (error) {
-      lastError = error instanceof Error ? error.message : String(error);
+      const status = axios.isAxiosError(error)
+        ? error.response?.status
+        : undefined;
+      const responseBody = axios.isAxiosError(error)
+        ? error.response?.data
+        : undefined;
+      const detail =
+        typeof responseBody === "string"
+          ? responseBody
+          : responseBody && typeof responseBody === "object"
+            ? JSON.stringify(responseBody)
+            : "";
+      lastError = status
+        ? `Request failed (${status}): ${detail || "model server error"}`
+        : error instanceof Error
+          ? error.message
+          : String(error);
+      // Client-side errors will not become valid by retrying the same image.
+      if (status && status < 500) break;
     }
 
     if (attempt < MODEL_REQUEST_ATTEMPTS) {
@@ -269,20 +283,12 @@ export const analyzeWithDiseaseModel = async (
     }
   }
 
-  if (!response) {
+  if (!responseData) {
     console.warn("[DiseaseModel] Request failed:", lastError);
     return createModelUnavailableAnalysis(
       "The disease model is unavailable right now. No diagnosis was produced.",
     );
   }
 
-  try {
-    const data = (await response.json()) as ModelResponse;
-    return toScanAnalysis(data);
-  } catch (error) {
-    console.warn("[DiseaseModel] Invalid JSON response:", error);
-    return createModelUnavailableAnalysis(
-      "The disease model returned an invalid response.",
-    );
-  }
+  return toScanAnalysis(responseData);
 };

@@ -26,12 +26,8 @@ import {
   analyzeWithDiseaseModel,
   warmDiseaseModel,
 } from "../../api/diseaseModelApi";
-import apiClient from "../../lib/apiClient";
-import {
-  MainTabParamList,
-  RootStackParamList,
-  ScanAnalysis,
-} from "../../navigation/types";
+import { saveDetailedScan, uploadScanImage } from "../../api/scanApi";
+import { MainTabParamList, RootStackParamList } from "../../navigation/types";
 import { useAppStore } from "../../store/appStore";
 
 type Props = {
@@ -46,22 +42,6 @@ const GREEN_DARK = "#065F2F";
 const TEXT_DARK = "#111827";
 const TEXT_MUTED = "#6B7280";
 const LIGHT_BG = "#F9FAFB";
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const getImageMeta = (uri: string, fallbackMimeType = "image/jpeg") => {
-  const cleanUri = uri.split("?")[0] ?? uri;
-  const extension = cleanUri.split(".").pop()?.toLowerCase();
-
-  if (extension === "png")
-    return { extension: "png", contentType: "image/png" };
-  if (extension === "webp")
-    return { extension: "webp", contentType: "image/webp" };
-
-  return {
-    extension: extension === "jpeg" ? "jpeg" : "jpg",
-    contentType: fallbackMimeType,
-  };
-};
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -79,55 +59,6 @@ export const ScannerScreen: React.FC<Props> = ({ navigation }) => {
     // Wake the sleeping Render model while the user frames their plant photo.
     warmDiseaseModel();
   }, []);
-
-  /**
-   * Upload the captured image to the Express backend via multipart/form-data.
-   * Returns the imageUrl served by the backend.
-   */
-  const uploadScanImage = async (
-    uri: string,
-    mimeType?: string,
-  ): Promise<string> => {
-    const { contentType, extension } = getImageMeta(uri, mimeType);
-
-    const formData = new FormData();
-    // React Native's FormData accepts { uri, name, type }
-    formData.append("image", {
-      uri,
-      name: `scan_${Date.now()}.${extension}`,
-      type: contentType,
-    } as any);
-
-    const { data } = await apiClient.post<{ imageUrl: string }>(
-      "/uploads",
-      formData,
-      {
-        // Override the client's JSON default. Axios/React Native adds the
-        // multipart boundary for the FormData payload.
-        headers: { "Content-Type": "multipart/form-data" },
-      },
-    );
-
-    return data.imageUrl;
-  };
-
-  /**
-   * Store the normalized scan record in the dedicated `scans` collection.
-   * Crop logs are maintained separately for the history timeline.
-   */
-  const saveDetailedScan = async (
-    imageUrl: string,
-    result: ScanAnalysis,
-  ): Promise<void> => {
-    await apiClient.post("/scans", {
-      imageUrl,
-      diseaseName: result.disease?.name ?? null,
-      confidence: result.disease?.confidence ?? null,
-      severity: result.disease?.severity ?? null,
-      healthScore: result.overallScore,
-      aiRecommendation: result.tips.join("\n"),
-    });
-  };
 
   const processImage = async (uri: string, mimeType?: string) => {
     setSelectedImageUri(uri);
@@ -506,12 +437,12 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 26,
   },
   previewImage: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     width: "100%",
     height: "100%",
   },
   processingOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 28,

@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing[4], position: 'relative', overflow: 'hidden',
   },
   mainCardBorder: {
-    ...StyleSheet.absoluteFillObject, borderRadius: BorderRadius.xl,
+    ...StyleSheet.absoluteFill, borderRadius: BorderRadius.xl,
     borderWidth: 1, borderColor: Colors.border,
   },
   mainIcon: { fontSize: 72, marginBottom: 8 },

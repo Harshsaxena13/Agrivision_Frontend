@@ -6,11 +6,9 @@
     "orientation": "portrait",
     "icon": "./assets/agrivision-icon.png",
     "userInterfaceStyle": "dark",
-    "splash": {
-      "backgroundColor": "#0A1A06"
-    },
     "ios": {
       "supportsTablet": true,
+      "deploymentTarget": "16.4",
       "infoPlist": {
         "NSCameraUsageDescription": "AgriVisionAI needs camera access to scan plants for disease detection.",
         "NSPhotoLibraryUsageDescription": "AgriVisionAI needs photo library access to analyze plant images.",
@@ -49,7 +47,21 @@
           "photosPermission": "Allow AgriVisionAI to access your photos to analyze plant images."
         }
       ],
-      "expo-font"
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0A1A06"
+        }
+      ],
+      "expo-font",
+      "expo-status-bar",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow AgriVisionAI to use your microphone so you can ask questions by voice."
+        }
+      ],
+      "expo-asset"
     ],
     "extra": {
       "eas": {

@@ -127,11 +127,23 @@ export interface UserProfile {
   joinedDate: string;
 }
 
+export interface ChatAttachment {
+  id: string;
+  kind: "image" | "pdf";
+  uri: string;
+  name: string;
+  mimeType: string;
+  size?: number; // bytes, when the picker reports it
+}
+
 export interface ChatMessage {
   id: string;
   text: string;
   isBot: boolean;
   timestamp: string;
+  attachments?: ChatAttachment[];
+  /** Disease-model result for the photo an AI reply answers */
+  scan?: { photo: ChatAttachment; result: ScanAnalysis };
 }
 
 export interface Field {

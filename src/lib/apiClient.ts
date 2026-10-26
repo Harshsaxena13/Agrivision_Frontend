@@ -37,7 +37,7 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // ─── Response interceptor: normalize errors ───────────────────────────────────
@@ -45,7 +45,8 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     const isTimeout =
-      error.code === "ECONNABORTED" || error.message?.toLowerCase().includes("timeout");
+      error.code === "ECONNABORTED" ||
+      error.message?.toLowerCase().includes("timeout");
     const isNetworkError = !error.response && error.message === "Network Error";
     const message =
       error.response?.data?.error ||
@@ -55,7 +56,7 @@ apiClient.interceptors.response.use(
           ? "Unable to reach the server. Check your internet connection and try again."
           : error.message || "Something went wrong");
     return Promise.reject(new Error(message));
-  }
+  },
 );
 
 export default apiClient;
